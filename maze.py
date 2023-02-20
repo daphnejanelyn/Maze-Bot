@@ -23,9 +23,12 @@ def initializeDisplay(maze, size):
                 maze[i][j] = 'w'
             elif(maze[i][j] == 'S'):
                 maze[i][j] = 'o'
-    print (maze)
-
-def updateDisplay(current_maze, current_node):
+    for i in range (size):
+        for j in range (size):
+            print (maze[i][j], end = ' ')
+        print ("\n")
+        
+def updateDisplay(current_maze, current_node, size):
     x = current_node.coordinate[0]
     y = current_node.coordinate[1]
 
@@ -35,7 +38,11 @@ def updateDisplay(current_maze, current_node):
     y = current_node.parent.coordinate[1]
 
     current_maze[x][y] = 'p'
-    print (current_maze)
+
+    for i in range (size):
+        for j in range (size):
+            print (current_maze[i][j], end = ' ')
+        print ("\n")
 
 
 def mazeSearch(startNode, goalNode, maze, size, displayMaze):
@@ -45,8 +52,8 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
     
     frontier.append(startNode)
     
+    
     while len(frontier) > 0:
-        
 
         if len(frontier) > 1:
             frontier.sort(key=lambda node: node.cost_with_heuristic)
@@ -55,7 +62,7 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
         current_node = frontier[0]
         
         if current_node != startNode:
-            updateDisplay(displayMaze,current_node)
+            updateDisplay(displayMaze,current_node, size)
         
         # Pop the current of frontier, add this to explored
         frontier.pop(0)
@@ -71,10 +78,10 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
         # check children
         x = current_node.coordinate[0]
         y = current_node.coordinate[1]
-
+        
 
         if x + 1 < size:
-            if maze[x+1][y] == '.' or maze[x+1][y] == 'G':
+            if maze[x+1][y] == 'x' or maze[x+1][y] == 'G':
                 new_state = State([x+1, y], current_node)
                 if new_state not in explored and new_state not in frontier:
                     new_state.g = current_node.g + 1
@@ -82,8 +89,8 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     frontier.append(new_state)
 
-        elif x-1 > -1:
-            if maze[x-1][y] == '.' or maze[x-1][y] == 'G':
+        if x-1 > -1:
+            if maze[x-1][y] == 'x' or maze[x-1][y] == 'G':
                 new_state = State([x-1, y], current_node)
                 if new_state not in explored and new_state not in frontier:
                     new_state.g = current_node.g + 1
@@ -91,8 +98,8 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     frontier.append(new_state)
 
-        elif y + 1 < size:
-            if maze[x][y+1] == '.' or maze[x][y+1] == 'G':
+        if y + 1 < size:
+            if maze[x][y+1] == 'x' or maze[x][y+1] == 'G':
                 new_state = State([x, y + 1], current_node)
                 if new_state not in explored and new_state not in frontier:
                     new_state.g = current_node.g + 1
@@ -100,20 +107,21 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     frontier.append(new_state)
             
-        elif y - 1 > -1:
-            if maze[x][y-1] == '.' or maze[x][y-1] == 'G':
+        if y - 1 > -1:
+            if maze[x][y-1] == 'x' or maze[x][y-1] == 'G':
                 new_state = State([x, y - 1], current_node)
                 if new_state not in explored and new_state not in frontier:
                     new_state.g = current_node.g + 1
                     new_state.h = aStar(goalNode,current_node)
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     frontier.append(new_state)
-
+        print ("\n")
+        
 
 def main ():
     i = 0
 
-    with open('maze.txt') as f:
+    with open("maze.txt") as f:
         size = int (f.readline())
         maze = [[]*size for i in range(size)] #initalize as a n by n matrix
         for line in f:
@@ -121,8 +129,9 @@ def main ():
             for letter in line:
                 maze[i].append(letter)
             i += 1
+    f.close()
     
-    #initialize start and goal states
+    #initialize st)art and goal states
     for i in range(size):
         if 'S' in maze[i]:
             startNode = State([i, maze[i].index('S')], None)
