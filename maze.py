@@ -51,12 +51,14 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
     explored = []
     
     frontier.append(startNode)
-    
+    count = 0
     
     while len(frontier) > 0:
 
         if len(frontier) > 1:
             frontier.sort(key=lambda node: node.cost_with_heuristic)
+        for state in frontier:
+            print(state.coordinate)
         
         #since sorted, get the first node in the list
         current_node = frontier[0]
@@ -85,7 +87,7 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
                 new_state = State([x+1, y], current_node)
                 if new_state not in explored:
                     new_state.g = current_node.g + 1
-                    new_state.h = aStar(goalNode,current_node)
+                    new_state.h = aStar(goalNode,new_state)
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     children.append(new_state)
 
@@ -94,7 +96,7 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
                 new_state = State([x-1, y], current_node)
                 if new_state not in explored:
                     new_state.g = current_node.g + 1
-                    new_state.h = aStar(goalNode,current_node)
+                    new_state.h = aStar(goalNode,new_state)
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     children.append(new_state)
 
@@ -103,7 +105,7 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
                 new_state = State([x, y + 1], current_node)
                 if new_state not in explored:
                     new_state.g = current_node.g + 1
-                    new_state.h = aStar(goalNode,current_node)
+                    new_state.h = aStar(goalNode,new_state)
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     children.append(new_state)
             
@@ -112,14 +114,15 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
                 new_state = State([x, y - 1], current_node)
                 if new_state not in explored:
                     new_state.g = current_node.g + 1
-                    new_state.h = aStar(goalNode,current_node)
+                    new_state.h = aStar(goalNode,new_state)
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     children.append(new_state)
+
         for node in children:
             for open_node in frontier:
                 if node == open_node and node.g > open_node.g:
                     continue
-        frontier.append(node)
+            frontier.append(node)
         print ("\n")
         
 
@@ -136,7 +139,7 @@ def main ():
             i += 1
     f.close()
     
-    #initialize st)art and goal states
+    #initialize start and goal states
     for i in range(size):
         if 'S' in maze[i]:
             startNode = State([i, maze[i].index('S')], None)
