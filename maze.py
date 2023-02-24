@@ -1,5 +1,4 @@
 import math
-
 class State():
     def __init__(self, coordinate = None, parent = None):
         self.coordinate = coordinate

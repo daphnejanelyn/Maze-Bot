@@ -1,5 +1,7 @@
 
 import turtle
+from tkinter import *  
+from tkinter import messagebox  
 
 window = turtle.Screen()
 window.bgcolor("black")
@@ -15,7 +17,7 @@ class Icon (turtle.Turtle):
         self.shapesize(1.0, 1.0, 2.0)
         self.color ("white")
         self.penup()
-        self.speedup= 0
+        self.speed(0)
 
 class Player (turtle.Turtle):
     def __init__(self):
@@ -25,8 +27,7 @@ class Player (turtle.Turtle):
         self.color ("green")
         self.penup()
         self.speed(0)
-        def hide(self):
-            self.hideturtle()
+        self.hideturtle()
 
 class Path (turtle.Turtle):
     def __init__(self):
@@ -58,8 +59,11 @@ class optimalPath (turtle.Turtle):
         self.speed(0)
         self.hideturtle()
 
+        
+
+
 # create a grid for maze configuration 
-def setup_maze (maze_configuration, n):
+def display_maze (maze_configuration, n):
     for y in range (n):
         for x in range (n):
             character = maze_configuration[y][x]
@@ -67,52 +71,36 @@ def setup_maze (maze_configuration, n):
             screen_x = -583 + ((((64-n)//2) + x) * 18)
             screen_y = 583 - ((((64-n)//2)+ y) * 18)
             #Check if it is an X (representing a wall)
-            if character == "X":
+
+            if character == "#":
                 wall.goto(screen_x, screen_y)
                 wall.stamp()
-            if character == "o":
+            if character == "S":
                 player.goto(screen_x, screen_y)
                 player.stamp()
             if character == "G":
                 goal.goto(screen_x, screen_y)
-                goal.showturtle()
                 goal.stamp()
+            
 
 
 #update the grid after each action
-def update_maze(maze_configuration, n):
-    goal.hideturtle()
-    path.hideturtle()
+def maze_optimalpath(maze_configuration, optimal_path, n):
     for y in range (n):
         for x in range (n):
             character = maze_configuration[y][x]
             #Calculate the screen x,y coordinates
             screen_x = -583 + ((((64-n)//2) + x )* 18)
             screen_y = 583 - ((((64-n)//2)+y) * 18)
-            #Check if it is an X (representing a wall)
-            if character == "*":
-                path.goto(screen_x, screen_y)
-                path.showturtle()
-                path.stamp()
 
-            if character == "o":
-                player.goto(screen_x, screen_y)
-                player.stamp()
-def show_path (maze_configuration, n):
-    goal.hideturtle()
-    path.hideturtle()
-    optimalpath.hideturtle()
-    for y in range (n):
-        for x in range (n):
-            character = maze_configuration[y][x]
-            #Calculate the screen x,y coordinates
-            screen_x = -583 + ((((64-n)//2) + x )* 18)
-            screen_y = 583 - ((((64-n)//2)+y) * 18)
-            #Check if it is an X (representing a wall)
-            if character == "@":
-                optimalpath.goto(screen_x, screen_y)
-                optimalpath.showturtle()
-                optimalpath.stamp()
+            if character == "X":
+                wall.goto(screen_x, screen_y)
+                wall.stamp()
+            if (optimal_path is not None):
+                if [y,x] in optimal_path:
+                    player.goto(screen_x, screen_y)
+                    player.stamp()
+
 
 wall = Icon()
 player = Player()
@@ -134,81 +122,63 @@ class State():
         return self.coordinate == other.coordinate
 
 def aStar(goal, currentNode):
-    return ((currentNode.coordinate[0] - goal.coordinate[0]) ** 2) + ((currentNode.coordinate[1] - goal.coordinate[1]) ** 2)
+    return ((goal.coordinate[0] - currentNode.coordinate[0]) ** 2) + ((goal.coordinate[1] - currentNode.coordinate[1]) ** 2)
 
 def initializeDisplay(maze, size):
     for i in range (size):
         for j in range (size):
-            if (maze[i][j] == '.'):
+            if (maze[i][j] == '.' or maze[i][j] == '*' or maze[i][j] == 'o'):
                 maze[i][j] = ' '
             elif (maze[i][j] == '#'):
                 maze[i][j] = 'X'
             elif(maze[i][j] == 'S'):
                 maze[i][j] = 'o'
-    for i in range (size):
-        for j in range (size):
-            print (maze[i][j], end = ' ')
-        print ("\n")
-    
         
-def updateDisplay(current_maze, current_node, size):
+def updateDisplay(displayMaze, current_node, size):
     x = current_node.coordinate[0]
     y = current_node.coordinate[1]
 
-    current_maze[x][y] = 'o'
+    displayMaze[x][y] = 'o'
 
-    x = current_node.parent.coordinate[0]
-    y = current_node.parent.coordinate[1]
+    while current_node.parent is not None:
+        x = current_node.parent.coordinate[0]
+        y = current_node.parent.coordinate[1]
 
-    current_maze[x][y] = '*'
-    
+        displayMaze[x][y] = '*'
+
+        current_node = current_node.parent
+
     for i in range (size):
         for j in range (size):
-            print (current_maze[i][j], end = ' ')
-        print ("\n")
-
-def highlight_path (optimal_path, display_maze, size):
-    for i in range (size):
-        for j in range (size):
-            if (i,j) in optimal_path:
-                print("True")
-                display_maze[i][j]= '@'
-    for i in range (size):
-        for j in range (size):
-            print (display_maze[i][j], end = ' ')
+            print (displayMaze[i][j], end = ' ')
         print ("\n")
 
 
-def mazeSearch(startNode, goalNode, maze, size, displayMaze):
+def mazeSearch(startNode, goalNode, maze, size):
     # Initialize frontier and explored list
     frontier = []
     explored = []
+    displayMaze = maze.copy()
     
     frontier.append(startNode)
     count = 0
     
     while len(frontier) > 0:
-
-        '''if len(frontier) > 1:
-            frontier.sort(key=lambda node: node.cost_with_heuristic)
-        for state in explored:
-            print(state.coordinate)'''
+        count += 1
+        initializeDisplay(displayMaze, size)
         
+
+        if len(frontier) > 1:
+            frontier.sort(key=lambda node: node.cost_with_heuristic)
+    
         #since sorted, get the first node in the list
         current_node = frontier[0]
-        current_index = 0
 
-        for index, node in enumerate(frontier):
-            if node.cost_with_heuristic < current_node.cost_with_heuristic:
-                current_node = node
-                current_index = index
+        updateDisplay(displayMaze,current_node, size)
         
-        if current_node != startNode:
-            updateDisplay(displayMaze,current_node, size)
-            update_maze(displayMaze, size)
         
         # Pop the current of frontier, add this to explored
-        frontier.pop(current_index)
+        frontier.pop(0)
         explored.append(current_node)
 
         if current_node == goalNode:
@@ -216,7 +186,7 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
             while current_node is not None:
                 optimalPath.append(current_node.coordinate)
                 current_node = current_node.parent
-            return optimalPath
+            return optimalPath[::1]
             
         # check children
         x = current_node.coordinate[0]
@@ -267,8 +237,11 @@ def mazeSearch(startNode, goalNode, maze, size, displayMaze):
         print ("\n")
         
 
+        
+
 def main ():
     i = 0
+    optimal_path = []
     # Create class instances
 
     with open("maze.txt") as f:
@@ -282,6 +255,7 @@ def main ():
     f.close()
     
     #initialize start and goal states
+    #initialize start and goal states
     for i in range(size):
         if 'S' in maze[i]:
             startNode = State([i, maze[i].index('S')], None)
@@ -290,19 +264,17 @@ def main ():
             
     startNode.h = aStar(goalNode, startNode)
     startNode.cost_with_heuristic = startNode.h
-    displayMaze = maze.copy()
-    initializeDisplay(displayMaze, size)
-    setup_maze (displayMaze, size)
-    optimal_path = []
-    optimal_path = mazeSearch(startNode,goalNode,maze,size,displayMaze)
-    print(optimal_path)
-
-    '''
-    print ("\n")
-    highlight_path(optimal_path, displayMaze, size)
-    show_path(displayMaze, size)
+    display_maze(maze, size)
+    optimal_path = mazeSearch(startNode,goalNode,maze,size)
+    if optimal_path is None:
+        print("No path found.")
+        messagebox.showwarning("Note","No path found") 
+        turtle.exitonclick()
+        
+    else:    
+        maze_optimalpath(maze, optimal_path, size)
     turtle.exitonclick()
-    '''
+
     
 
 if __name__ == '__main__':
