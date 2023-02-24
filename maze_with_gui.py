@@ -64,8 +64,8 @@ def setup_maze (maze_configuration, n):
         for x in range (n):
             character = maze_configuration[y][x]
             #Calculate the screen x,y coordinates
-            screen_x = -529 + ((((64-n)//2) + x) * 18)
-            screen_y = 529 - ((((64-n)//2)+ y) * 18)
+            screen_x = -523 + ((((64-n)//2) + x) * 18)
+            screen_y = 523 - ((((64-n)//2)+ y) * 18)
             #Check if it is an X (representing a wall)
             if character == "X":
                 wall.goto(screen_x, screen_y)
