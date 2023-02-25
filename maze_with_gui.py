@@ -1,13 +1,15 @@
 
 import turtle
 from tkinter import *  
-from tkinter import messagebox  
+from tkinter import messagebox 
+import time
+import random
 
 window = turtle.Screen()
 window.bgcolor("black")
 window.title("Maze Bot")
 window.setup(740,740)
-
+walls=[]
 
 #Code for GUI
 class Icon (turtle.Turtle):
@@ -22,19 +24,32 @@ class Icon (turtle.Turtle):
 class Player (turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
-        self.shape("circle")
+        self.shape("turtle")
         self.shapesize(0.5, 0.5, 0.5)
         self.color ("green")
         self.penup()
-        self.speed(0)
-        self.hideturtle()
+        self.speed(1)
+
+        def go_up(self):
+            if ((self.xcor(), self.ycor + 24)) not in walls:
+                self.goto (self.xcor(), self.ycor + 24)
+        def go_down(self):
+            if (self.xcor(), self.ycor - 24) not in walls:
+                self.goto (self.xcor(), self.ycor - 24)
+        def go_right(self):
+            if (self.xcor() + 24, self.ycor) not in walls:
+                self.goto (self.xcor() + 24, self.ycor)
+        def go_left(self):
+            if ((self.xcor () -24, self.ycor)):
+                self.goto (self.xcor () -24, self.ycor)
+
 
 class Path (turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
         self.shape("circle")
         self.shapesize(0.5, 0.5, 0.5)
-        self.color ("blue")
+        self.color ("yellow")
         self.penup()
         self.speed(0)
         self.hideturtle()
@@ -61,7 +76,6 @@ class optimalPath (turtle.Turtle):
 
         
 
-
 # create a grid for maze configuration 
 def display_maze (maze_configuration, n):
     for y in range (n):
@@ -70,19 +84,46 @@ def display_maze (maze_configuration, n):
             #Calculate the screen x,y coordinates
             screen_x = -583 + ((((64-n)//2) + x) * 18)
             screen_y = 583 - ((((64-n)//2)+ y) * 18)
-            #Check if it is an X (representing a wall)
-
+            
             if character == "#":
                 wall.goto(screen_x, screen_y)
+                walls.append((screen_x, screen_y))
                 wall.stamp()
             if character == "S":
                 player.goto(screen_x, screen_y)
-                player.stamp()
             if character == "G":
                 goal.goto(screen_x, screen_y)
                 goal.stamp()
-            
+        
 
+
+def move_player (maze_configuration, n):
+    for y in range (n):
+        for x in range (n):
+            character = maze_configuration[y][x]
+            #Calculate the screen x,y coordinates
+            screen_x = -583 + ((((64-n)//2) + x) * 18)
+            screen_y = 583 - ((((64-n)//2)+ y) * 18)
+
+            #Check where o is
+            if character == 'o':
+                #player.goto(screen_x, screen_y)
+                while (screen_x, screen_y) != (player.xcor(), player.ycor()):
+                    if (player.ycor()  < screen_y):
+                        if (player.xcor(), player.ycor() + 18) not in walls:
+                            player.goto(player.xcor(), player.ycor() + 18)
+                    elif (player.ycor() > screen_y):
+                        if (player.xcor(), player.ycor() - 18) not in walls:
+                            player.goto(player.xcor(), player.ycor() - 18)
+                    if (player.xcor()  < screen_x):
+                        if (player.xcor()+ 18, player.ycor()) not in walls:
+                            player.goto(player.xcor() + 18, player.ycor())
+                    elif (player.xcor()  > screen_x):
+                        if (player.xcor() - 18, player.ycor()) not in walls:
+                            player.goto(player.xcor() - 18, player.ycor())
+                    
+                    
+                    
 
 #update the grid after each action
 def maze_optimalpath(maze_configuration, optimal_path, n):
@@ -98,8 +139,8 @@ def maze_optimalpath(maze_configuration, optimal_path, n):
                 wall.stamp()
             if (optimal_path is not None):
                 if [y,x] in optimal_path:
-                    player.goto(screen_x, screen_y)
-                    player.stamp()
+                    path.goto(screen_x, screen_y)
+                    path.stamp()
 
 
 wall = Icon()
@@ -165,8 +206,10 @@ def mazeSearch(startNode, goalNode, maze, size):
     
     while len(frontier) > 0:
         count += 1
-        initializeDisplay(displayMaze, size)
         
+
+        initializeDisplay(displayMaze, size)
+        move_player(displayMaze, size)
 
         if len(frontier) > 1:
             frontier.sort(key=lambda node: node.cost_with_heuristic)
@@ -175,11 +218,30 @@ def mazeSearch(startNode, goalNode, maze, size):
         current_node = frontier[0]
 
         updateDisplay(displayMaze,current_node, size)
+        start = time.time()
+        while time.time() - start < 1:
+            move_player(displayMaze, size)
+       
         
         
         # Pop the current of frontier, add this to explored
         frontier.pop(0)
         explored.append(current_node)
+
+        print (len(explored))
+        w = turtle.Turtle()
+        w.color ("white")
+        w.penup()
+        w.goto (-200, 350)
+        w.pendown()
+        style = ('Courier', 10, 'normal')
+        w.write("Counter = " + str(count) + "   States Explored = " + str(len(explored)), font = style, align ='center')
+        start = time.time()
+        while time.time () - start < 0.5:
+            pass
+        w.undo()
+        w.hideturtle()
+        
 
         if current_node == goalNode:
             optimalPath = []
@@ -230,6 +292,9 @@ def mazeSearch(startNode, goalNode, maze, size):
                     children.append(new_state)
 
         for node in children:
+            for closed_child in explored:
+                if node == closed_child:
+                    continue
             for open_node in frontier:
                 if node == open_node and node.g > open_node.g:
                     continue
