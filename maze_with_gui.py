@@ -98,6 +98,7 @@ def display_maze (maze_configuration, n):
 
 
 def move_player (maze_configuration, n):
+    path.clear()
     for y in range (n):
         for x in range (n):
             character = maze_configuration[y][x]
@@ -121,6 +122,9 @@ def move_player (maze_configuration, n):
                     elif (player.xcor()  > screen_x):
                         if (player.xcor() - 18, player.ycor()) not in walls:
                             player.goto(player.xcor() - 18, player.ycor())
+            if character == '*':
+                path.goto(screen_x, screen_y)
+                path.stamp()
                     
                     
                     
