@@ -219,7 +219,7 @@ def mazeSearch(startNode, goalNode, maze, size):
 
         updateDisplay(displayMaze,current_node, size)
         start = time.time()
-        while time.time() - start < 1:
+        while time.time() - start < 0.5:
             move_player(displayMaze, size)
        
         
