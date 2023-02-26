@@ -1,9 +1,8 @@
 
 import turtle
-from tkinter import *  
 from tkinter import messagebox 
 import time
-import random
+from warnings import warn
 
 window = turtle.Screen()
 window.bgcolor("black")
@@ -94,6 +93,8 @@ def display_maze (maze_configuration, n):
             if character == "G":
                 goal.goto(screen_x, screen_y)
                 goal.stamp()
+            if (character == '.' or character == '*' or character == 'o'):
+                continue
         
 
 
@@ -107,21 +108,9 @@ def move_player (maze_configuration, n):
             screen_y = 583 - ((((64-n)//2)+ y) * 18)
 
             #Check where o is
-            if character == 'o':
-                #player.goto(screen_x, screen_y)
-                while (screen_x, screen_y) != (player.xcor(), player.ycor()):
-                    if (player.ycor()  < screen_y):
-                        if (player.xcor(), player.ycor() + 18) not in walls:
-                            player.goto(player.xcor(), player.ycor() + 18)
-                    elif (player.ycor() > screen_y):
-                        if (player.xcor(), player.ycor() - 18) not in walls:
-                            player.goto(player.xcor(), player.ycor() - 18)
-                    if (player.xcor()  < screen_x):
-                        if (player.xcor()+ 18, player.ycor()) not in walls:
-                            player.goto(player.xcor() + 18, player.ycor())
-                    elif (player.xcor()  > screen_x):
-                        if (player.xcor() - 18, player.ycor()) not in walls:
-                            player.goto(player.xcor() - 18, player.ycor())
+            if character == 'o':      
+                player.setx(screen_x)
+                player.sety (screen_y)
             if character == '*':
                 path.goto(screen_x, screen_y)
                 path.stamp()
@@ -209,30 +198,23 @@ def mazeSearch(startNode, goalNode, maze, size):
     count = 0
     
     while len(frontier) > 0:
+        print (len(frontier))
         count += 1
-        
-
         initializeDisplay(displayMaze, size)
-        move_player(displayMaze, size)
 
-        if len(frontier) > 1:
-            frontier.sort(key=lambda node: node.cost_with_heuristic)
+        frontier.sort(key=lambda node: node.cost_with_heuristic)
     
         #since sorted, get the first node in the list
         current_node = frontier[0]
 
-        updateDisplay(displayMaze,current_node, size)
-        start = time.time()
-        while time.time() - start < 0.5:
-            move_player(displayMaze, size)
-       
-        
-        
         # Pop the current of frontier, add this to explored
+        updateDisplay(displayMaze,current_node, size)
         frontier.pop(0)
         explored.append(current_node)
+        
+        move_player(displayMaze, size)
 
-        print (len(explored))
+        
         w = turtle.Turtle()
         w.color ("white")
         w.penup()
@@ -245,14 +227,14 @@ def mazeSearch(startNode, goalNode, maze, size):
             pass
         w.undo()
         w.hideturtle()
-        
+
 
         if current_node == goalNode:
             optimalPath = []
             while current_node is not None:
                 optimalPath.append(current_node.coordinate)
                 current_node = current_node.parent
-            return optimalPath[::1]
+            return optimalPath
             
         # check children
         x = current_node.coordinate[0]
@@ -294,17 +276,19 @@ def mazeSearch(startNode, goalNode, maze, size):
                     new_state.h = aStar(goalNode,new_state)
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     children.append(new_state)
-
-        for node in children:
-            for closed_child in explored:
-                if node == closed_child:
+        if (len(children) > 0):  
+            for node in children:
+                # Child is already in the open list
+                if len([open_node for open_node in frontier if node.coordinate == open_node.coordinate and node.g > open_node.g]) > 0:
                     continue
-            for open_node in frontier:
-                if node == open_node and node.g > open_node.g:
-                    continue
-            frontier.append(node)
+                frontier.append (node)
         print ("\n")
         
+    warn("Couldn't get a path to destination")
+    print("No path found.")
+    messagebox.showwarning("Note","No path found") 
+    turtle.exitonclick()
+    return None
 
         
 
@@ -324,7 +308,6 @@ def main ():
     f.close()
     
     #initialize start and goal states
-    #initialize start and goal states
     for i in range(size):
         if 'S' in maze[i]:
             startNode = State([i, maze[i].index('S')], None)
@@ -335,13 +318,8 @@ def main ():
     startNode.cost_with_heuristic = startNode.h
     display_maze(maze, size)
     optimal_path = mazeSearch(startNode,goalNode,maze,size)
-    if optimal_path is None:
-        print("No path found.")
-        messagebox.showwarning("Note","No path found") 
-        turtle.exitonclick()
-        
-    else:    
-        maze_optimalpath(maze, optimal_path, size)
+    maze_optimalpath(maze, optimal_path, size)
+
     turtle.exitonclick()
 
     
