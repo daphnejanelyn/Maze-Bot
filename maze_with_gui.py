@@ -284,10 +284,7 @@ def mazeSearch(startNode, goalNode, maze, size):
                 frontier.append (node)
         print ("\n")
         
-    warn("Couldn't get a path to destination")
     print("No path found.")
-    messagebox.showwarning("Note","No path found") 
-    turtle.exitonclick()
     return None
 
         
@@ -318,7 +315,10 @@ def main ():
     startNode.cost_with_heuristic = startNode.h
     display_maze(maze, size)
     optimal_path = mazeSearch(startNode,goalNode,maze,size)
-    maze_optimalpath(maze, optimal_path, size)
+    if optimal_path is not None:
+        maze_optimalpath(maze, optimal_path, size)
+    else:
+        messagebox.showwarning("Note","No path found") 
 
     turtle.exitonclick()
 
