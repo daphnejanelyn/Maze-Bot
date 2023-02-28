@@ -1,4 +1,4 @@
-import math
+#Code for Main Logic and Search Algorithm
 class State():
     def __init__(self, coordinate = None, parent = None):
         self.coordinate = coordinate
@@ -53,20 +53,20 @@ def mazeSearch(startNode, goalNode, maze, size):
     count = 0
     
     while len(frontier) > 0:
+        print (len(frontier))
         count += 1
         initializeDisplay(displayMaze, size)
 
-        if len(frontier) > 1:
-            frontier.sort(key=lambda node: node.cost_with_heuristic)
+        frontier.sort(key=lambda node: node.cost_with_heuristic)
     
         #since sorted, get the first node in the list
         current_node = frontier[0]
 
-        updateDisplay(displayMaze,current_node, size)
-        
         # Pop the current of frontier, add this to explored
+        updateDisplay(displayMaze,current_node, size)
         frontier.pop(0)
         explored.append(current_node)
+     
 
         if current_node == goalNode:
             optimalPath = []
@@ -115,17 +115,23 @@ def mazeSearch(startNode, goalNode, maze, size):
                     new_state.h = aStar(goalNode,new_state)
                     new_state.cost_with_heuristic = new_state.g + new_state.h
                     children.append(new_state)
-
-        for node in children:
-            for open_node in frontier:
-                if node == open_node and node.g > open_node.g:
+        if (len(children) > 0):  
+            for node in children:
+                # Child is already in the open list
+                if len([open_node for open_node in frontier if node.coordinate == open_node.coordinate and node.g > open_node.g]) > 0:
                     continue
-            frontier.append(node)
+                frontier.append (node)
         print ("\n")
+        
+    print("No path found.")
+    return None
+
         
 
 def main ():
     i = 0
+    optimal_path = []
+    # Create class instances
 
     with open("maze.txt") as f:
         size = int (f.readline())
@@ -146,7 +152,12 @@ def main ():
             
     startNode.h = aStar(goalNode, startNode)
     startNode.cost_with_heuristic = startNode.h
-    mazeSearch(startNode,goalNode,maze,size)
+
+    optimal_path = mazeSearch(startNode,goalNode,maze,size)
+
+
+
+    
 
 if __name__ == '__main__':
     main()
