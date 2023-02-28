@@ -15,7 +15,7 @@ class Icon (turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self) 
         self.shape ("square")
-        self.shapesize(1.0, 1.0, 2.0)
+        self.shapesize(0.7, 0.7, 0.5)
         self.color ("white")
         self.penup()
         self.speed(0)
@@ -24,30 +24,17 @@ class Player (turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
         self.shape("turtle")
-        self.shapesize(0.5, 0.5, 0.5)
+        self.shapesize(0.3, 0.3, 0.5)
         self.color ("green")
         self.penup()
         self.speed(1)
-
-        def go_up(self):
-            if ((self.xcor(), self.ycor + 24)) not in walls:
-                self.goto (self.xcor(), self.ycor + 24)
-        def go_down(self):
-            if (self.xcor(), self.ycor - 24) not in walls:
-                self.goto (self.xcor(), self.ycor - 24)
-        def go_right(self):
-            if (self.xcor() + 24, self.ycor) not in walls:
-                self.goto (self.xcor() + 24, self.ycor)
-        def go_left(self):
-            if ((self.xcor () -24, self.ycor)):
-                self.goto (self.xcor () -24, self.ycor)
 
 
 class Path (turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
         self.shape("circle")
-        self.shapesize(0.5, 0.5, 0.5)
+        self.shapesize(0.3, 0.3, 0.5)
         self.color ("yellow")
         self.penup()
         self.speed(0)
@@ -57,7 +44,7 @@ class Goal (turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
         self.shape("triangle")
-        self.shapesize(0.5, 0.5, 0.5)
+        self.shapesize(0.3, 0.3, 0.5)
         self.color ("red")
         self.penup()
         self.speed(0)
@@ -67,7 +54,7 @@ class optimalPath (turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
         self.shape("triangle")
-        self.shapesize(0.5, 0.5, 0.5)
+        self.shapesize(0.3, 0.3, 0.5)
         self.color ("yellow")
         self.penup()
         self.speed(0)
@@ -81,8 +68,8 @@ def display_maze (maze_configuration, n):
         for x in range (n):
             character = maze_configuration[y][x]
             #Calculate the screen x,y coordinates
-            screen_x = -583 + ((((64-n)//2) + x) * 18)
-            screen_y = 583 - ((((64-n)//2)+ y) * 18)
+            screen_x = -383 + ((((64-n)//2) + x) * 12)
+            screen_y = 383 - ((((64-n)//2)+ y) * 12)
             
             if character == "#":
                 wall.goto(screen_x, screen_y)
@@ -104,8 +91,8 @@ def move_player (maze_configuration, n):
         for x in range (n):
             character = maze_configuration[y][x]
             #Calculate the screen x,y coordinates
-            screen_x = -583 + ((((64-n)//2) + x) * 18)
-            screen_y = 583 - ((((64-n)//2)+ y) * 18)
+            screen_x = -383 + ((((64-n)//2) + x) * 12)
+            screen_y = 383 - ((((64-n)//2)+ y) * 12)
 
             #Check where o is
             if character == 'o':      
@@ -124,8 +111,8 @@ def maze_optimalpath(maze_configuration, optimal_path, n):
         for x in range (n):
             character = maze_configuration[y][x]
             #Calculate the screen x,y coordinates
-            screen_x = -583 + ((((64-n)//2) + x )* 18)
-            screen_y = 583 - ((((64-n)//2)+y) * 18)
+            screen_x = -383 + ((((64-n)//2) + x )* 12)
+            screen_y = 383 - ((((64-n)//2)+y) * 12)
 
             if character == "X":
                 wall.goto(screen_x, screen_y)
@@ -218,12 +205,12 @@ def mazeSearch(startNode, goalNode, maze, size):
         w = turtle.Turtle()
         w.color ("white")
         w.penup()
-        w.goto (-200, 350)
+        w.goto (-490, 350)
         w.pendown()
         style = ('Courier', 10, 'normal')
-        w.write("Counter = " + str(count) + "   States Explored = " + str(len(explored)), font = style, align ='center')
+        w.write("States Explored = " + str(count), font = style, align ='center')
         start = time.time()
-        while time.time () - start < 0.5:
+        while time.time () - start < 0.3:
             pass
         w.undo()
         w.hideturtle()
