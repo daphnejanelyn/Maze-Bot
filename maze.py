@@ -66,7 +66,8 @@ def mazeSearch(startNode, goalNode, maze, size):
         updateDisplay(displayMaze,current_node, size)
         frontier.pop(0)
         explored.append(current_node)
-     
+
+        print (len(explored))
 
         if current_node == goalNode:
             optimalPath = []
