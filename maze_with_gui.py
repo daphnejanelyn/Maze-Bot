@@ -9,6 +9,18 @@ Daphne Janelyn Go
 Enrique Rafael Lejano
 Maria Monica Manlises
 Krizchelle Danielle Wong
+
+INSTRUCTIONS FOR RUNNING THE PROGRAM:
+1. If your current version of Python is 3.10 and below, run this statement (brew install python-tk@3.<Version Number>) on the code line. 
+Ex: brew install python-tk@3.10
+2. To input the maze configuration, simply paste your maze configuration test case to maze.txt located in thie folder. As an alternative, 
+you can delete the said file and make your own maze.txt file with your chosen maze configuration. 
+3. Once you run the program, an application box should appear. For better viewing, please maximize the application. 
+4. Once the bot is able to reach its goal node, a simple mouse click in any black space in the application will terminate the program.
+Terminating the program before it reaches the goal node or terminates the search requires clicking the exit button. 
+5. As an alternative view, the maze is also displayed via the command prompt. 
+
+
 """
 import turtle
 from tkinter import messagebox 
