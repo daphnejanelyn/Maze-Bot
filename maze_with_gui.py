@@ -1,4 +1,15 @@
+"""
+This is to certify that this project is our own work, based on our personal efforts in studying and
+applying the concepts learned. We have constructed the functions and their respective algorithms 
+and corresponding code by ourselves. The program was run, tested, and debugged by our own efforts. 
+We further certify that we have not copied in part or whole or otherwise plagiarized the work 
+of other students and/or persons.
 
+Daphne Janelyn Go
+Enrique Rafael Lejano
+Maria Monica Manlises
+Krizchelle Danielle Wong
+"""
 import turtle
 from tkinter import messagebox 
 import time
@@ -200,8 +211,8 @@ def heuristic(goal, currentNode):
     """
      Calculates the aStar between two points. It is assumed that the points are in the same coordinate system
      
-     @param goal - The point to be considered
-     @param currentNode - The point to be considered ( a Brute force way )
+     @param goal - The goal state of the maze
+     @param currentNode - The current point to be considered 
      
      @return The euclidean distance
     """
@@ -212,13 +223,10 @@ def initializeDisplay(maze, size):
      Replaces spaces in maze with spaces. This is used to make the display easier to read.
      
      @param maze - The maze to be displayed
-     @param size - The size of the
+     @param size - The size of the maze
     """
-    # Add spaces to the maze.
     for i in range (size):
-        # Add a space to the maze.
         for j in range (size):
-            # maze i j is the maze j j.
             if (maze[i][j] == '.' or maze[i][j] == '*' or maze[i][j] == 'o'):
                 maze[i][j] = ' '
             elif (maze[i][j] == '#'):
@@ -231,8 +239,8 @@ def updateDisplay(displayMaze, current_node, size):
      Updates the display maze. This is a helper function to make it easier to use in an interactive program
      
      @param displayMaze - A 2D array of display mazes
-     @param current_node - The node to display in the display
-     @param size - The size of the
+     @param current_node - The node to display 
+     @param size - The size of the maze
     """
     x = current_node.coordinate[0]
     y = current_node.coordinate[1]
@@ -248,7 +256,7 @@ def updateDisplay(displayMaze, current_node, size):
 
         current_node = current_node.parent
 
-    # Prints the maze in the form of a list of size size
+    # Prints the maze in an n x n matrix
     for i in range (size):
         # Print the maze in the current size
         for j in range (size):
@@ -258,7 +266,8 @@ def updateDisplay(displayMaze, current_node, size):
 
 def mazeSearch(startNode, goalNode, maze, size):
     """
-     Search the maze for a goal. This is a function that uses heuristics to determine the frontier and explores the nodes in the maze until there are no more nodes to explore
+     Search the maze for a goal. This is a function that uses heuristics to determine the frontier 
+     and explores the nodes in the maze until there are no more nodes to explore
      
      @param startNode - The node that we start from
      @param goalNode - The node that we want to go to
@@ -302,7 +311,7 @@ def mazeSearch(startNode, goalNode, maze, size):
         style = ('Courier', 10, 'normal')
         w.write("States Explored = " + str(count), font = style, align ='center')
         start = time.time()
-        # This function is used to check if the time is between 0. 3 seconds
+        # This function is used to delay the counter prompt for easier visibility.
         while time.time () - start < 0.3:
             pass
         w.undo()
@@ -374,11 +383,11 @@ def mazeSearch(startNode, goalNode, maze, size):
 
 def main ():
     """
-     Main function for maze search. Reads the maze. txt file and uses a star algorithm to find the optimal path
+     Main function for maze search. Reads the maze. txt file and uses astar algorithm to find the optimal path
     """
     i = 0
     optimal_path = []
-    # Create class instances
+    
 
     with open("maze.txt") as f:
         size = int (f.readline())
@@ -403,10 +412,10 @@ def main ():
     optimal_path = mazeSearch(startNode,goalNode,maze,size)
     if optimal_path is not None:
         maze_optimalpath(maze, optimal_path, size)
+        turtle.exitonclick()
     else:
         messagebox.showwarning("Note","No path found") 
-
-    turtle.exitonclick()
+        turtle.exitonclick()
 
     
 
