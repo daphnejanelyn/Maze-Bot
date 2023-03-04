@@ -17,7 +17,7 @@ Ex: brew install python-tk@3.10
 you can delete the said file and make your own maze.txt file with your chosen maze configuration. 
 3. Once you run the program, an application box should appear. For better viewing, please maximize the application. 
 4. Once the bot is able to reach its goal node, a simple mouse click in any black space in the application will terminate the program.
-Terminating the program before it reaches the goal node or terminates the search requires clicking the exit button. 
+Terminating the program before it reaches the goal node or terminating the search requires clicking the exit button. 
 5. As an alternative view, the maze is also displayed via the command prompt. 
 
 
@@ -26,6 +26,7 @@ import turtle
 from tkinter import messagebox 
 import time
 from warnings import warn
+import math
 
 window = turtle.Screen()
 window.bgcolor("black")
@@ -228,7 +229,7 @@ def heuristic(goal, currentNode):
      
      @return The euclidean distance
     """
-    return ((goal.coordinate[0] - currentNode.coordinate[0]) ** 2) + ((goal.coordinate[1] - currentNode.coordinate[1]) ** 2)
+    return math.sqrt((goal.coordinate[0] - currentNode.coordinate[0]) ** 2) + ((goal.coordinate[1] - currentNode.coordinate[1]) ** 2)
 
 def initializeDisplay(maze, size):
     """
