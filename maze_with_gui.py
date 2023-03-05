@@ -394,6 +394,10 @@ def mazeSearch(startNode, goalNode, maze, size):
         print ("\n")
         
     print("No path found.")
+    
+    # Display the number of explored states at the end of the program
+    messagebox.showwarning("Fail",f"No Path Found!\nNumber of Explored States: {len(explored)}") 
+    
     return None
 
         
@@ -431,7 +435,6 @@ def main ():
         maze_optimalpath(maze, optimal_path, size)
         turtle.exitonclick()
     else:
-        messagebox.showwarning("Note","No path found") 
         turtle.exitonclick()
 
     
