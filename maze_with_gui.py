@@ -34,6 +34,8 @@ window.title("Maze Bot")
 window.screensize()
 window.setup(width = 1.0, height = 1.0)
 walls=[]
+turtle.tracer(0,0)
+
 
 #Code for GUI
 class Icon (turtle.Turtle):
@@ -46,7 +48,8 @@ class Icon (turtle.Turtle):
         self.shapesize(0.7, 0.7, 0.5)
         self.color ("white")
         self.penup()
-        self.speed(0)
+        self.speed("fastest")
+        
 
 class Player (turtle.Turtle):
     def __init__(self):
@@ -58,8 +61,8 @@ class Player (turtle.Turtle):
         self.shapesize(0.3, 0.3, 0.5)
         self.color ("green")
         self.penup()
-        self.speed(0)
-
+        self.speed("fastest")
+        
 
 class Path (turtle.Turtle):
     def __init__(self):
@@ -71,8 +74,9 @@ class Path (turtle.Turtle):
         self.shapesize(0.3, 0.3, 0.5)
         self.color ("yellow")
         self.penup()
-        self.speed(0)
+        self.speed("fastest")
         self.hideturtle()
+        
 
 class Goal (turtle.Turtle):
     def __init__(self):
@@ -84,8 +88,9 @@ class Goal (turtle.Turtle):
         self.shapesize(0.3, 0.3, 0.5)
         self.color ("red")
         self.penup()
-        self.speed(0)
+        self.speed("fastest")
         self.hideturtle()
+        
 
 class optimalPath (turtle.Turtle):
     def __init__(self):
@@ -314,7 +319,7 @@ def mazeSearch(startNode, goalNode, maze, size):
         explored.append(current_node)
         
         move_player(displayMaze, size)
-
+        turtle.update()
         
         w = turtle.Turtle()
         w.color ("white")
@@ -325,7 +330,7 @@ def mazeSearch(startNode, goalNode, maze, size):
         w.write("States Explored = " + str(count), font = style, align ='center')
         start = time.time()
         # This function is used to delay the counter prompt for easier visibility.
-        while time.time () - start < 0.3:
+        while time.time () - start < 0.1:
             pass
         w.undo()
         w.hideturtle()
@@ -422,9 +427,11 @@ def main ():
     startNode.h = heuristic(goalNode, startNode)
     startNode.cost_with_heuristic = startNode.h
     display_maze(maze, size)
+    turtle.update()
     optimal_path = mazeSearch(startNode,goalNode,maze,size)
     if optimal_path is not None:
         maze_optimalpath(maze, optimal_path, size)
+        turtle.update()
         turtle.exitonclick()
     else:
         messagebox.showwarning("Note","No path found") 
