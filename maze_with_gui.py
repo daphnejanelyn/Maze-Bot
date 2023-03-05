@@ -232,7 +232,7 @@ def heuristic(goal, currentNode):
      @param goal - The goal state of the maze
      @param currentNode - The current point to be considered 
      
-     @return The euclidean distance
+     @return The Manhattan distance
     """
     return abs(goal.coordinate[0] - currentNode.coordinate[0]) + abs(goal.coordinate[1] - currentNode.coordinate[1])
 
@@ -343,6 +343,10 @@ def mazeSearch(startNode, goalNode, maze, size):
             while current_node is not None:
                 optimalPath.append(current_node.coordinate)
                 current_node = current_node.parent
+                
+            # Display the number of explored states at the end of the program
+            messagebox.showwarning("Done!",f"Number of Explored States: {len(explored)}") 
+            
             return optimalPath
             
         # check children
@@ -395,6 +399,10 @@ def mazeSearch(startNode, goalNode, maze, size):
         print ("\n")
         
     print("No path found.")
+    
+    # Display the number of explored states at the end of the program
+    messagebox.showwarning("Fail",f"No Path Found!\nNumber of Explored States: {len(explored)}") 
+    
     return None
 
         
@@ -434,7 +442,6 @@ def main ():
         turtle.update()
         turtle.exitonclick()
     else:
-        messagebox.showwarning("Note","No path found") 
         turtle.exitonclick()
 
     
