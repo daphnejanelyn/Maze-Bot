@@ -229,7 +229,7 @@ def heuristic(goal, currentNode):
      
      @return The euclidean distance
     """
-    return math.sqrt((goal.coordinate[0] - currentNode.coordinate[0]) ** 2 + (goal.coordinate[1] - currentNode.coordinate[1]) ** 2)
+    return abs(goal.coordinate[0] - currentNode.coordinate[0]) + abs(goal.coordinate[1] - currentNode.coordinate[1])
 
 def initializeDisplay(maze, size):
     """
