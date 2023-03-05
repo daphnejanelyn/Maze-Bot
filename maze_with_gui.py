@@ -227,7 +227,7 @@ def heuristic(goal, currentNode):
      @param goal - The goal state of the maze
      @param currentNode - The current point to be considered 
      
-     @return The euclidean distance
+     @return The Manhattan distance
     """
     return abs(goal.coordinate[0] - currentNode.coordinate[0]) + abs(goal.coordinate[1] - currentNode.coordinate[1])
 
