@@ -338,6 +338,10 @@ def mazeSearch(startNode, goalNode, maze, size):
             while current_node is not None:
                 optimalPath.append(current_node.coordinate)
                 current_node = current_node.parent
+                
+            # Display the number of explored states at the end of the program
+            messagebox.showwarning("Done!",f"Number of Explored States: {len(explored)}") 
+            
             return optimalPath
             
         # check children
