@@ -19,7 +19,7 @@ you can delete the said file and make your own maze.txt file with your chosen ma
 4. Once the bot is able to reach its goal node, a simple mouse click in any black space in the application will terminate the program.
 Terminating the program before it reaches the goal node or terminating the search requires clicking the exit button. 
 5. As an alternative view, the maze is also displayed via the command prompt. 
-
+6. In case you want to speed up the GUI display, you may remove the counter delay located at line 330-333. Please see report for better visualization.
 
 """
 import turtle
@@ -304,7 +304,6 @@ def mazeSearch(startNode, goalNode, maze, size):
     
     # This function is used to find the optimal path to the frontier.
     while len(frontier) > 0:
-        print (len(frontier))
         count += 1
         initializeDisplay(displayMaze, size)
 
@@ -330,7 +329,7 @@ def mazeSearch(startNode, goalNode, maze, size):
         w.write("States Explored = " + str(count), font = style, align ='center')
         start = time.time()
         # This function is used to delay the counter prompt for easier visibility.
-        while time.time () - start < 0.1:
+        while time.time () - start < 0.3:
             pass
         w.undo()
         w.hideturtle()
